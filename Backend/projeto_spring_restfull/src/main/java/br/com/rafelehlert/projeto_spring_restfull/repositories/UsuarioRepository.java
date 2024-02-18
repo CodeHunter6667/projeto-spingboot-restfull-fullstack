@@ -14,6 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     @Query("SELECT obj FROM Usuario obj WHERE UPPER(obj.login) LIKE UPPER(CONCAT('%', :login, '%'))")
     Usuario procurarPorLogin(String login);
 
-    @Query("SELECT obj FROM Usuario obj WHERE UPPER(obj.nome) LIKE UPPER(CONCAT('%', :login, '%'))")
+    @Query("SELECT obj FROM Usuario obj WHERE UPPER(obj.nome) LIKE UPPER(CONCAT('%', :nome, '%'))")
     Page<Usuario> procurarPorNome(String nome, Pageable pageable);
 }
