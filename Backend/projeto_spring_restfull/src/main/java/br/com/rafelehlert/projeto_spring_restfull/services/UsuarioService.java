@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.rafelehlert.projeto_spring_restfull.dtos.TelefoneDTO;
 import br.com.rafelehlert.projeto_spring_restfull.dtos.UsuarioDto;
+import br.com.rafelehlert.projeto_spring_restfull.model.Telefone;
 import br.com.rafelehlert.projeto_spring_restfull.model.Usuario;
 import br.com.rafelehlert.projeto_spring_restfull.repositories.UsuarioRepository;
 import br.com.rafelehlert.projeto_spring_restfull.services.UsuarioNotFoundException.UsuarioNotFoundException;
@@ -70,5 +72,11 @@ public class UsuarioService {
         entity.setLogin(dto.getLogin());
         entity.setSenha(dto.getSenha());
         entity.setNome(dto.getNome());
+        for (TelefoneDTO telDto : dto.getTelefones()) {
+            Telefone tel = new Telefone();
+            tel.setId(telDto.getId());
+            tel.setNumero(telDto.getNumero());
+            entity.getTelefones().add(tel);
+        }
     }
 }
