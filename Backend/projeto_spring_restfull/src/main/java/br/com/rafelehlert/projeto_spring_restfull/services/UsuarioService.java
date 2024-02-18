@@ -1,11 +1,10 @@
 package br.com.rafelehlert.projeto_spring_restfull.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.rafelehlert.projeto_spring_restfull.dtos.UsuarioDto;
@@ -21,9 +20,9 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     @Transactional(readOnly = true)
-    public List<UsuarioDto> getAll(){
-        List<Usuario> result = repository.findAll();
-        return result.stream().map(x -> new UsuarioDto(x)).toList();
+    public Page<UsuarioDto> getAll(Pageable pageable){
+        Page<Usuario> result = repository.findAll(pageable);
+        return result.map(x -> new UsuarioDto(x));
     }
 
     @Transactional(readOnly = true)
@@ -33,9 +32,9 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UsuarioDto> procuraPorLogin(String login, Pageable pageable){
-        Page<Usuario> result = repository.procurarPorLogin(login, pageable);
-        return result.map(x -> new UsuarioDto(x));
+    public UsuarioDto procuraPorLogin(String login){
+        Usuario usuario = repository.procurarPorLogin(login);
+        return new UsuarioDto(usuario);
     }
 
     @Transactional
@@ -58,6 +57,7 @@ public class UsuarioService {
         }
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deletaUsuario(Long id){
         if (!repository.existsById(id)) {
             throw new UsuarioNotFoundException("Usuario não encontrado");
