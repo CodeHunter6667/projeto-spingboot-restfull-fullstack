@@ -1,9 +1,13 @@
 package br.com.rafelehlert.projeto_spring_restfull.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,6 +20,9 @@ public class Usuario {
     private String login;
     private String senha;
     private String nome;
+
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Telefone> telefones;
 
     public Usuario(Long id, String login, String senha, String nome) {
         this.id = id;
@@ -52,6 +59,14 @@ public class Usuario {
         this.nome = nome;
     }
 
+    public List<Telefone> getTelefones() {
+        return telefones;
+    }
+
+    public void setTelefones(List<Telefone> telefones) {
+        this.telefones = telefones;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -76,4 +91,5 @@ public class Usuario {
             return false;
         return true;
     }
+
 }
