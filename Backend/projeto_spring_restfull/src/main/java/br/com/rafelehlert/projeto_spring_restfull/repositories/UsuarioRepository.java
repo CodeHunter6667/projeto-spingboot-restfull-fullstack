@@ -12,7 +12,7 @@ import br.com.rafelehlert.projeto_spring_restfull.model.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     
     @Query("SELECT obj FROM Usuario obj WHERE UPPER(obj.login) LIKE UPPER(CONCAT('%', :login, '%'))")
-    Page<Usuario> procurarPorLogin(String login, Pageable pageable);
+    Usuario procurarPorLogin(String login);
 
     @Query("SELECT obj FROM Usuario obj WHERE UPPER(obj.nome) LIKE UPPER(CONCAT('%', :login, '%'))")
     Page<Usuario> procurarPorNome(String nome, Pageable pageable);
