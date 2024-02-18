@@ -1,5 +1,9 @@
 package br.com.rafelehlert.projeto_spring_restfull.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.rafelehlert.projeto_spring_restfull.model.Telefone;
 import br.com.rafelehlert.projeto_spring_restfull.model.Usuario;
 
 public class UsuarioDto {
@@ -8,12 +12,16 @@ public class UsuarioDto {
     private String login;
     private String senha;
     private String nome;
+    private List<TelefoneDTO> telefones = new ArrayList<>();
 
     public UsuarioDto(Usuario entity){
         id = entity.getId();
         login = entity.getLogin();
         senha = entity.getSenha();
         nome = entity.getNome();
+        for (Telefone tel : entity.getTelefones()) {
+            telefones.add(new TelefoneDTO(tel));
+        }
     }
 
     public UsuarioDto(Long id, String login, String senha, String nome) {
@@ -22,7 +30,7 @@ public class UsuarioDto {
         this.senha = senha;
         this.nome = nome;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -34,6 +42,10 @@ public class UsuarioDto {
     }
     public String getNome() {
         return nome;
+    }
+
+    public List<TelefoneDTO> getTelefones() {
+        return telefones;
     }
 
 }
