@@ -1,19 +1,17 @@
 package br.com.rafelehlert.projeto_spring_restfull.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import br.com.rafelehlert.projeto_spring_restfull.dtos.TelefoneDTO;
 import br.com.rafelehlert.projeto_spring_restfull.dtos.UsuarioDto;
-import br.com.rafelehlert.projeto_spring_restfull.model.Telefone;
 import br.com.rafelehlert.projeto_spring_restfull.model.Usuario;
 import br.com.rafelehlert.projeto_spring_restfull.repositories.UsuarioRepository;
 import br.com.rafelehlert.projeto_spring_restfull.services.UsuarioNotFoundException.UsuarioNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
@@ -43,6 +41,8 @@ public class UsuarioService {
     public UsuarioDto novoUsuario(UsuarioDto dto){
         Usuario usuario = new Usuario();
         copyDtoToEntity(dto, usuario);
+        var senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+        usuario.setSenha(senhaCriptografada);
         repository.save(usuario);
         return new UsuarioDto(usuario);
     }
@@ -72,11 +72,6 @@ public class UsuarioService {
         entity.setLogin(dto.getLogin());
         entity.setSenha(dto.getSenha());
         entity.setNome(dto.getNome());
-        for (TelefoneDTO telDto : dto.getTelefones()) {
-            Telefone tel = new Telefone();
-            tel.setId(telDto.getId());
-            tel.setNumero(telDto.getNumero());
-            entity.getTelefones().add(tel);
-        }
+        entity.setTelefones(dto.getTelefones());
     }
 }
