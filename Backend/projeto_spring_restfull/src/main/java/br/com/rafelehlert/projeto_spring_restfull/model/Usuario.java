@@ -1,18 +1,28 @@
 package br.com.rafelehlert.projeto_spring_restfull.model;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "tb_usuario")
-public class Usuario {
+public class Usuario implements UserDetails{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +33,16 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Telefone> telefones;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_usuarios_role", uniqueConstraints = @UniqueConstraint(
+                columnNames = {"usuario_id", "role_id"}, 
+                name = "unique_role_user"),
+    joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id", table = "usuario", unique = false,
+                foreignKey = @ForeignKey(name = "usuario_fk", value = ConstraintMode.CONSTRAINT)),
+    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", table = "role", unique = false,
+                foreignKey = @ForeignKey(name = "role_fk", value = ConstraintMode.CONSTRAINT)))
+    private List<Role> roles;
 
     public Usuario(Long id, String login, String senha, String nome) {
         this.id = id;
@@ -89,6 +109,41 @@ public class Usuario {
                 return false;
         } else if (!id.equals(other.id))
             return false;
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       return this.roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
         return true;
     }
 
