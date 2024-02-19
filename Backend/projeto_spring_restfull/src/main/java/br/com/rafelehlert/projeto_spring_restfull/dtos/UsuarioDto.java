@@ -12,23 +12,22 @@ public class UsuarioDto {
     private String login;
     private String senha;
     private String nome;
-    private List<TelefoneDTO> telefones = new ArrayList<>();
+    private List<Telefone> telefones;
 
     public UsuarioDto(Usuario entity){
         id = entity.getId();
         login = entity.getLogin();
         senha = entity.getSenha();
         nome = entity.getNome();
-        for (Telefone tel : entity.getTelefones()) {
-            telefones.add(new TelefoneDTO(tel));
-        }
+        telefones = entity.getTelefones();
     }
 
-    public UsuarioDto(Long id, String login, String senha, String nome) {
+    public UsuarioDto(Long id, String login, String senha, String nome, List<Telefone> telefones) {
         this.id = id;
         this.login = login;
         this.senha = senha;
         this.nome = nome;
+        this.telefones = telefones;
     }
 
     public Long getId() {
@@ -43,9 +42,7 @@ public class UsuarioDto {
     public String getNome() {
         return nome;
     }
-
-    public List<TelefoneDTO> getTelefones() {
+    public List<Telefone> getTelefones() {
         return telefones;
     }
-
 }
