@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
@@ -114,17 +115,18 @@ public class Usuario implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       return this.roles;
+
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return getSenha();
     }
 
     @Override
     public String getUsername() {
-        return this.login;
+        return getLogin();
     }
 
     @Override
